@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login Page</title>
+	<link href="../static/style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+	<h2>Connexion à votre Franglish !</h2>
+	<div id="frm">
+		<form method="POST">
+			<p>
+				<label>Username:</label>
+				<input type="text" id="user" name="user"/>
+
+			</p>
+			<p>
+				<label>Password: </label>
+				<input type="password" id="pass" name="pass" />
+			</p>
+			<p>
+				<input type="submit" value="Se connecter"/>
+			</p>
+			<br>
+			<li><a href="{{ url_for('nvUtil')}}">S'inscrire..</a></li>
+		</form>
+	</div>	
+	<h3>Qui sommes nous?</h3>
+	<p class="parAcl">Nous sommes une secte du franglais et nous cherchons à nous améliorer dans le domaine avec l'espoir de devenir bilingue.  </p>
+	<p class="parAcl">Grace à notre site vous pourrez mélanger loisir et apprentissage.</p>
+	<br>
+	<h3>Fonctionnement:</h3>
+	<p class="parAcl">Vous pourrez créer des carnets, dans un carnet vous pourrez avoir plusieurs listes, dans les listes vous pourrez mettres votre mot ou expression française et sa traduction en anglais. Une fois un carnet complété vous pourrez vous exercer. </p>
+	<br>
+	<h3>Exemple:</h3>
+	<p class="parAcl">Le carnet: Film contient les Listes(Deadpool|Star Wars|Harry Potter), dans la liste Deadpool vous aurez les mots anglais et français du film.</p>
+</body>
+</html>
