@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
 #from flask_mysql_connector import MySQL
-from flaskext.mysql import MySQL
+from flaskext.mysql import MySQL##aucasou
+import bcrypt
 #import mysql.connector
 #from flask_mysqldb import MySQL
+
 
 app = Flask(__name__)
 
@@ -35,11 +37,9 @@ def Autentification():
 	if request.method=='POST':
 		username = request.form['user']
 		password = request.form['pass']
+		hashed = bcrypt.hashpw(b'password', bcrypt.gensalt())
 		cursor = mysql.connect().cursor()
-		#cursor = mysql.connect().cursor(MySQLdb.cursors.DictCursor)
-		#cursor = mysql.connection.cursor()
-		#cursor.execute("SELECT pseudo, password from Utilisateur where pseudo='"+username+"' and password='"+password+"'",(username, password))
-		cursor.execute('SELECT * FROM Utilisateur WHERE pseudo = %s AND password = %s', (username, password))
+		cursor.execute('SELECT * FROM Utilisateur WHERE pseudo = %s AND password = %s', (username, hashed))
 		data = cursor.fetchone()
 		cursor.close()
 		if data is None:
@@ -60,11 +60,13 @@ def creationUtilisateur():
 		password = request.form['pass']
 		passwordV=request.form['pass2']
 		if password==passwordV:
-			cursor = mysql.connect().cursor()
-			cursor.execute("INSERT INTO Utilisateur (pseudo, password) VALUES('"+username+"','"+password+"')")
-			#cursor.execute("INSERT INTO Utilisateur (pseudo, password) VALUES('billie','test')")test ajout
+			hashed=bcrypt.hashpw(b'password', bcrypt.gensalt())
+			connection=mysql.connect()#important de garder la connexion sinon il ne commit pas la requete du cursor
+			cursor = connection.cursor()
+			cursor.execute("INSERT INTO Utilisateur (pseudo, password) VALUES(%s,%s)", (username, hashed))
+			#cursor.execute("INSERT INTO Utilisateur (pseudo, password) VALUES('billie','test')")#test ajout
 			#mysql.connection.commit()
-			mysql.connect().commit()
+			connection.commit()
 			cursor.close()
 			return redirect(url_for('successAjout'))
 		return redirect(url_for('errorAjout'))
@@ -87,6 +89,8 @@ def users():
 	if resultValue>0:
 		userDetails=cur.fetchall()
 		return render_template('users.html',userDetails=userDetails)
+
+
 
 if __name__=="__main__":
     app.run(debug=True)

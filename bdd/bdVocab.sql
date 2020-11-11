@@ -2,9 +2,7 @@ CREATE DATABASE IF NOT EXISTS bdVocab;
 USE bdVocab;
 
 drop table if exists Posseder;
-drop table if exists Contenir;
 drop table if exists Avoir;
-drop table if exists Appartenir;
 drop table if exists Utilisateur;
 drop table if exists Liste;
 drop table if exists Carnet;
@@ -14,8 +12,8 @@ drop table if exists VocaAnglais;
 
 CREATE TABLE if not exists Utilisateur (
   numUtil int(210) auto_increment,
-  pseudo varchar(35) DEFAULT NULL,
-  password varchar(35) default null,
+  pseudo varchar(65) DEFAULT NULL,
+  password varchar(80) default null,
   CONSTRAINT pkUtilisateur PRIMARY KEY (numUtil)
 ) 
 ENGINE=InnoDB;
@@ -79,3 +77,4 @@ ENGINE=InnoDB;
 
 insert into Utilisateur(pseudo, password) values('root','mdp');
 
+select * from Utilisateur;
