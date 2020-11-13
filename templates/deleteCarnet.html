@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login Page</title>
+	<link href="../static/style.css" rel="stylesheet" type="text/css"/>
+</head>
+{% include 'header.html' %}
+
+<body>
+	<form method="POST">
+		<table border=1>
+			<th>nom: </th>
+			<th>date creation: </th>
+			<th></th>
+		{% for carnet in carnetDetails %}
+		<tr>
+			<td> {{carnet[1]}}</td>
+			<td> {{carnet[2]}}</td>
+			<td><button type=submit value="{{carnet[0]}}" id="{{carnet[0]}}" name="numCarnet">Delete</button></td>
+		</tr>
+		{% endfor %}
+	</table>
+	</form>
+</body>
+{% include 'footer.html' %}
+</html>

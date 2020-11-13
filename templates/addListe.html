@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login Page</title>
+	<link href="../static/style.css" rel="stylesheet" type="text/css"/>
+</head>
+{% include 'header.html' %}
+
+<body>
+	<h2>Ajout Liste</h2>
+	<div id="frm">
+		<form method="POST">
+			<p>
+				<br>
+				<label>Nom du carnet:</label>
+				<select id="numCarnet" name="numCarnet">
+					{% for carnet in carnetDetails %}
+					<option value="{{carnet[0]}}">{{carnet[1]}}</option>
+					{% endfor %}
+				</select>
+				<br>
+				<br>
+				<label>Nom de la liste:</label>
+				<br>
+				<input type="text" id="nomListe" name="nomListe"/>
+				<br>
+				<br>
+				<label>Commentaire:</label>
+				<br>
+				<!--<input type="text" id="commentaire" name="commentaire" style="width:200px; height:200px;"/>-->
+				<textarea rows="5" type="text" id="commentaire" name="commentaire"></textarea>
+			</p>
+			<p>
+				<input type="submit" value="Ajouter"/>
+			</p>
+			<br>
+		</form>
+	</div>	
+
+	<form method="POST" >
+		<table border=1>
+			<th>nom: </th>
+			<th>date creation: </th>
+			<th></th>
+		{% for carnet in carnetDetails %}
+		<tr>
+			<td> {{carnet[1]}}</td>
+			<td> {{carnet[2]}}</td>
+			
+		</tr>
+		{% endfor %}
+	</table>
+	</form>
+
+</body>
+{% include 'footer.html' %}
+</html>

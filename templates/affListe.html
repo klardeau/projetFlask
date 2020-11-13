@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login Page</title>
+	<link href="../static/style.css" rel="stylesheet" type="text/css"/>
+</head>
+{% include 'header.html' %}
+
+<body>
+	<form method="POST">
+		<table border=1>
+			<th>nom Carnet: </th>
+			<th>nom Liste: </th>
+			<th>Commentaire </th>
+			<th>date Creation Liste: </th>
+			<th></th>
+		{% for liste in userDetails %}
+		<tr>
+			<td> {{liste[0]}}</td>
+			<td> {{liste[1]}}</td>
+			<td> {{liste[2]}}</td>
+			<td> {{liste[3]}}</td>
+		</tr>
+		{% endfor %}
+	</table>
+	</form>
+</body>
+{% include 'footer.html' %}
+</html>

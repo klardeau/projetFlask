@@ -2,19 +2,17 @@
 <html>
 <head>
 	<title>Login Page</title>
-	<!--<link href="../css/style.css" rel="stylesheet" type="text/css">-->
+	<link href="../static/style.css" rel="stylesheet" type="text/css"/>
 </head>
+{% include 'header.html' %}
+
 <body>
+	
+	<p>Hello {{ username }}</p>
+	
 	<div>
-		<form action="/" method="POST">
-			<p>
-				<label>billie</label>
-				<input type="text" id="user" name="user"/>
-			</p>
-			<p>
-				<input type="submit" text="Se connecter"/>
-			</p>
-		</form>
+		<li><a href="{{ url_for('Home')}}">déconnexion</a></li>
 	</div>	
 </body>
+{% include 'footer.html' %}
 </html>

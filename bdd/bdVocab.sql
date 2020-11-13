@@ -11,15 +11,14 @@ drop table if exists VocaFrancais;
 drop table if exists VocaAnglais;
 
 CREATE TABLE if not exists Utilisateur (
-  numUtil int(210) auto_increment,
-  pseudo varchar(65) DEFAULT NULL,
+  pseudo varchar(65) not NULL,
   password varchar(80) default null,
-  CONSTRAINT pkUtilisateur PRIMARY KEY (numUtil)
+  CONSTRAINT pkUtilisateur PRIMARY KEY (pseudo)
 ) 
 ENGINE=InnoDB;
 
 CREATE TABLE if not exists Carnet (
-  numCarnet int(210) auto_increment,
+  numCarnet varchar(80) not null,/* not null*/
   nom varchar(35) DEFAULT NULL,
   dateCreation datetime default null,
   CONSTRAINT pkCarnet PRIMARY KEY (numCarnet)
@@ -28,20 +27,20 @@ ENGINE=InnoDB;
 
 
 CREATE TABLE IF NOT EXISTS Posseder(
-numUtil int(210) not null,
-numCarnet int(210) not null,
-CONSTRAINT pkPosseder primary key (numUtil, numCarnet),
-CONSTRAINT fkPossederUtilisateur foreign key(numUtil) references Utilisateur(numUtil),
+pseudo varchar(65) not null,
+numCarnet varchar(80) not null,
+CONSTRAINT pkPosseder primary key (pseudo, numCarnet),
+CONSTRAINT fkPossederUtilisateur foreign key(pseudo) references Utilisateur(pseudo),
 CONSTRAINT fkPossederCarnet foreign key(numCarnet) references Carnet(numCarnet)
 )
 ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Liste(
-numListe int(210) not null,
+numListe varchar(55),
 nom varchar(35) not null,
-dateCreation datetime not null,
+dateCreation datetime default null,
 commentaire varchar(185),
-numCarnet int(210), 
+numCarnet varchar(80), 
 CONSTRAINT pkListe primary key(numListe),
 CONSTRAINT fkListeCarnet foreign key(numCarnet) references Carnet(numCarnet)
 )
@@ -49,25 +48,23 @@ ENGINE=InnoDB;
 
 
 CREATE TABLE IF NOT EXISTS VocaFrancais(
-numMF int(210),
+numMF varchar(55),/*date qui se transforme en nombre en fonction des minute secondejour..*/
 libelle varchar(75),
-dateCreation datetime not null,
 CONSTRAINT pkMotFrancais primary key (numMF)
 )
 ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS VocaAnglais(
-numMA int(210),
+numMA varchar(55),
 libelle varchar(75),
-dateCreation datetime not null,
 CONSTRAINT pkMotAnglais primary key (numMA)
 )
 ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Avoir(
-numMA int(210),
-numMF int(210),
-numListe int(210) not null,
+numMA varchar(55),
+numMF varchar(55),
+numListe varchar(55),
 CONSTRAINT pkAvoir primary key(numMA, numMF, numListe),
 CONSTRAINT fkAvoirVocaFrancais foreign key(numMF) references VocaFrancais(numMF),
 CONSTRAINT fkAvoirVocaAnglais foreign key(numMA) references VocaAnglais(numMA),
@@ -77,4 +74,10 @@ ENGINE=InnoDB;
 
 insert into Utilisateur(pseudo, password) values('root','mdp');
 
-select * from Utilisateur;
+
+select * from Avoir;
+select * from VocaFrancais;
+select * from VocaAnglais;
+select * from Carnet;
+select * from Posseder;
+select * from Liste;

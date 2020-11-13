@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login Page</title>
+	<link href="../static/style.css" rel="stylesheet" type="text/css"/>
+</head>
+{% include 'header.html' %}
+
+<body>
+	<form method="POST">
+		<table border=1>
+			<th>Carnet nom: </th>
+			<th>Liste nom: </th>
+			<th>commentaire: </th>
+			<th>date creation:</th>
+			<th></th>
+		{% for liste in listeDetails %}
+		<tr>
+			<td> {{liste[0]}}</td>
+			<td> {{liste[2]}}</td>
+			<td> {{liste[3]}}</td>
+			<td> {{liste[4]}}</td>
+			<td><button type=submit value="{{liste[1]}}" id="{{liste[1]}}" name="numListe">Delete</button></td>
+		</tr>
+		{% endfor %}
+	</table>
+	</form>
+</body>
+{% include 'footer.html' %}
+</html>

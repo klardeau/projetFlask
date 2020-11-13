@@ -1,0 +1,31 @@
+<header>
+<!--problème php à réglé avec flask. include plus simple-->
+<ul id="menu-deroulant">
+	<li><a href="{{ url_for('HomeCo')}}">Accueil</a>
+	</li>
+	<li><a href="./?action=xmlConvert">Passer un test</a></li>
+	<li><a>Carnet</a>
+		<ul>
+			<li><a href="{{ url_for('addCarnet')}}">Ajouter</a></li>
+			<li><a href="{{ url_for('deleteCarnet')}}">Supprimer</a></li>
+		</ul>
+	</li>
+	<li><a>Liste d'un carnet</a>
+		<ul>
+			<li><a href="{{ url_for('addListe')}}">Ajouter</a></li>
+			<li><a href="{{ url_for('deleteListe')}}">Supprimer</a></li>
+			<li><a href="{{ url_for('affListe')}}">Afficher liste</a></li>
+		</ul>
+	</li>
+	<li><a>Mot Anglais et Français d'une liste</a>
+		<ul>
+			<li><a href="{{ url_for('addMotAF')}}">Ajouter</a></li>
+			<li><a href="{{ url_for('deleteMotAF')}}">Supprimer</a></li>
+		</ul>
+	</li>
+	
+</ul>		
+			
+		
+
+</header>
