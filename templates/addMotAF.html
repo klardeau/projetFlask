@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login Page</title>
+	<link href="../static/style.css" rel="stylesheet" type="text/css"/>
+</head>
+{% include 'header.html' %}
+
+<body>
+<div id="frm">
+		<form method="POST">
+			<p>
+				<br>
+				<label>Nom de la liste:</label>
+				<select id="numListe" name="numListe">
+					{% for lst in listeDetails %}
+					<option value="{{lst[0]}}">{{lst[2]}}</option>
+					{% endfor %}
+				</select>
+				<br>
+				<br>
+				<label>Mot ou phrase en Français:</label>
+				<br>
+				<input type="text" id="lblFr" name="lblFr"/>
+				<br>
+				<label>Mot ou phrase en Anglais:</label>
+				<br>
+				<input type="text" id="lblAn" name="lblAn"/>
+			</p>
+			<p>
+				<input type="submit" value="Ajouter"/>
+			</p>
+			<br>
+		</form>
+	</div>	
+	<table border=1>
+			<th>Carnet nom: </th>
+			<th>Liste nom: </th>
+			<th>commentaire: </th>
+			<th>date creation:</th>
+		{% for liste in listeDetails %}
+		<tr>
+			<td> {{liste[1]}}</td>
+			<td> {{liste[2]}}</td>
+			<td> {{liste[3]}}</td>
+			<td> {{liste[4]}}</td>
+		</tr>
+		{% endfor %}
+	</table>
+</body>
+{% include 'footer.html' %}
+</html>

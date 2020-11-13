@@ -86,25 +86,6 @@ def passerTest():
 def addCarnet():
 	return render_template('addCarnet.html', username=user.get_username())
 
-'''@app.route('/deleteListe')
-def deleteListe():
-	return render_template('deleteListe.html')'''
-'''
-@app.route('/ajouterListe')
-def ajouterListe(numCarnet):
-	return render_template('ajouterListe.html', numCarnet=numCarnet)'''
-'''@app.route('/deleteCarnet')
-def deleteCarnet():
-	return render_template('deleteCarnet.html')'''
-
-'''@app.route('/addListe')
-def addListe():
-	return render_template('addListe.html')'''
-
-
-@app.route('/addMotAF')
-def addMotAF():
-	return render_template('addMotAF.html')
 
 @app.route('/deleteMotAF')
 def deleteMotAF():
@@ -314,7 +295,7 @@ def affListe():
 
 #finaffliste
 
-#delete Liste------------------------------------------------------------------------------------------------
+#delete Liste--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 @app.route('/deleteListe')
 def deleteListe():
 	
@@ -371,41 +352,40 @@ def successDeleteListe():
 	return '<h1>Suppression éffectué ! <a href="/deleteListe">deleteListe</a></h1>'
 #fin delete Liste
 
-#AjouterMotAnglaisETFrancais
+#AjouterMotAnglaisETFrancais-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 @app.route('/addMotAF')
 def addMotAF():
 	cur=mysql.connect().cursor()
-	resultValue=cur.execute("SELECT Liste.numListe, Carnet.nom, Liste.nom, Liste.commentaire, Liste.dateCreation FROM Liste inner join Carnet on Liste.numCarnet=Carnet.numCarnet inner join Posseder on Carnet.numCarnet=Posseder.numCarnet WHERE Posseder.pseudo=%s Order by Carnet.nom", (user.get_username()), (user.get_username()))
+	resultValue=cur.execute("SELECT Liste.numListe, Carnet.nom, Liste.nom, Liste.commentaire, Liste.dateCreation FROM Liste inner join Carnet on Liste.numCarnet=Carnet.numCarnet inner join Posseder on Carnet.numCarnet=Posseder.numCarnet WHERE Posseder.pseudo=%s Order by Carnet.nom", (user.get_username()))
 	if resultValue>0:
-		carnetDetails=cur.fetchall()
+		listeDetails=cur.fetchall()
 		cur.close()
-		return render_template('addMotAF.html',carnetDetails=carnetDetails)
+		return render_template('addMotAF.html',listeDetails=listeDetails)
 	else: return '<h1>Vous n\'avez pas de liste, lien vers la création d\'une liste <a href="/addListe">addListe</a></h1>'
 
-'''
-@app.route('/addListe',methods=['GET','POST'])
-def btnEnvoieSurAjouterListe():
-	if request.method=='POST':
-		return render_template('ajouterListe.html',numCarnet=request.form['numCarnet'])'''
-		#return redirect(url_for('ajouterListe',numCarnet=request.form['numCarnet']))
 
-@app.route('/addListe',methods=['GET','POST'])
-def ajouterListeDansBDD():
+@app.route('/addMotAF',methods=['GET','POST'])
+def ajouterMotAF():#il faut ajouter le lien Avoir après les mots Anglais et Français
 	if request.method=='POST':
-		numCarnet=request.form['numCarnet']
-		commentaire=request.form['commentaire']
-		nom=request.form['nomListe']
+		numListe=request.form['numListe']
+		lblFr=request.form['lblFr']
+		lblAn=request.form['lblAn']
 		
-		dateCreation = datetime.datetime.now()
-		numListe=uuid.uuid4()
-		#try:
-		connection=mysql.connect()#important de garder la connexion sinon il ne commit pas la requete du cursor
-		cursor = connection.cursor()
-			#try:
-		cursor.execute("INSERT INTO Liste (numListe, nom, dateCreation, commentaire, numCarnet) VALUES(%s,%s,%s,%s,%s)", (str(numListe), nom, dateCreation,commentaire, numCarnet))
-		connection.commit()
-		cursor.close()
-		return '<h1> Succés lors de l\'ajout <a href="/addListe">addListe</a></h1>'
+		numFrAn=uuid.uuid4()#l'un n'est rien sans l'autre donc autant mettre le meme id
+		try:
+			connection=mysql.connect()#important de garder la connexion sinon il ne commit pas la requete du cursor
+			cursor = connection.cursor()
+			try:
+				cursor.execute("INSERT INTO VocaAnglais (numMA, libelle) VALUES(%s,%s)", (str(numFrAn), lblAn))
+				connection.commit()
+				cursor.execute("INSERT INTO VocaFrancais (numMF, libelle) VALUES(%s,%s)", (str(numFrAn), lblFr))
+				connection.commit()
+				cursor.execute("INSERT INTO Avoir (numMA, numMF, numListe) VALUES(%s,%s,%s)", (str(numFrAn), str(numFrAn), numListe))#la table Avoir pour relier les deux mots mais SURTOUT les mettres dans la liste
+				connection.commit()
+				cursor.close()
+				return '<h1> Succés lors de l\'ajout <a href="/addMotAF">addMotAF</a></h1>'
+			except: '<h1> Erreur lors de l\'ajout <a href="/addMotAF">addMotAF</a></h1>'
+		except: return '<h1> Erreur de connexion à la base de donnée <a href="/addMotAF">addMotAF</a></h1>'
 #FinAjout
 
 
