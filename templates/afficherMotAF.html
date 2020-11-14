@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login Page</title>
+	<link href="../static/style.css" rel="stylesheet" type="text/css"/>
+</head>
+{% include 'header.html' %}
+
+<body>
+<table border=1>
+			<th>Libelle Fr: </th>
+			<th>Libelle An: </th>
+		{% for mot in affMot %}
+		<tr>
+			<td> {{mot[0]}}</td>
+			<td> {{mot[1]}}</td>
+		</tr>
+		{% endfor %}
+	</table>
+</body>
+{% include 'footer.html' %}
+</html>

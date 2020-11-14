@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login Page</title>
+	<link href="../static/style.css" rel="stylesheet" type="text/css"/>
+</head>
+{% include 'header.html' %}
+
+<body>
+	<form method="POST">
+		<table border=1>
+			<th>Libelle Fr: </th>
+			<th>Libelle An: </th>
+			<th>nom Liste: </th>
+			<th></th>
+		{% for mot in motDetails %}
+		<tr>
+			<td> {{mot[1]}}</td>
+			<td> {{mot[2]}}</td>
+			<td> {{mot[3]}}</td>
+			<td><button type=submit value="{{mot[0]}}" id="{{mot[0]}}" name="numMotAF">Delete</button></td>
+		</tr>
+		{% endfor %}
+	</table>
+	</form>
+</body>
+{% include 'footer.html' %}
+</html>

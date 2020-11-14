@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login Page</title>
+	<link href="../static/style.css" rel="stylesheet" type="text/css"/>
+</head>
+{% include 'header.html' %}
+
+<body>
+<div id="frm">
+		<form method="POST">
+			<p>
+				<br>
+				<label>Nom de la liste:</label>
+				<select id="numListe" name="numListe">
+					{% for lst in listeDetails %}
+					<option value="{{lst[0]}}">{{lst[1]}}</option>
+					{% endfor %}
+				</select>
+				<br>
+				<br>
+			</p>
+			<p>
+				<input type="submit" value="GO !"/>
+			</p>
+			<br>
+		</form>
+	</div>
+</body>
+{% include 'footer.html' %}
+</html>

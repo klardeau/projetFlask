@@ -87,10 +87,6 @@ def addCarnet():
 	return render_template('addCarnet.html', username=user.get_username())
 
 
-@app.route('/deleteMotAF')
-def deleteMotAF():
-	return render_template('deleteMotAF.html')
-
 #creation d'un utilisateur-----------------------------------------------------------------------------------------
 @app.route('/nvUtil',methods=['GET','POST'])
 def creationUtilisateur():
@@ -205,20 +201,20 @@ def suppressionCarnet():
 					connection.commit()
 				if resultFr>0:
 					for rowF in frenchId:
-						cursor.execute("DELETE from VocaFrancais where numMF=",(rowF[0]))
+						cursor.execute("DELETE from VocaFrancais where numMF=%s",(rowF[0]))
 						connection.commit()
 				if resultAn>0:
 					for rowA in englishId:
-						cursor.execute("DELETE from VocaAnglais where numMA=",(rowA[0]))
+						cursor.execute("DELETE from VocaAnglais where numMA=%s",(rowA[0]))
 						connection.commit()
 				resultListe=cursor.execute("SELECT * from Liste inner join Carnet on Liste.numCarnet=Carnet.numCarnet where Carnet.numCarnet = %s", (numCarnet))
 				if resultListe>0:
 					cursor.execute("DELETE from Liste inner join Carnet on Liste.numCarnet=Carnet.numCarnet where Carnet.numCarnet = %s", (numCarnet))
 					connection.commit()
-				cursor.execute("DELETE from Carnet where numCarnet=numCarnet", (numCarnet))
+				cursor.execute("DELETE from Carnet where numCarnet=%s", (numCarnet))
 				connection.commit()
 				cursor.close()
-				return redirect(url_for('successDeleteCarnet'))
+				return redirect(url_for('successDeleteCarnet'))#La fonction fonctionne MAIS afficher errorDeleteCarnet :()
 			except:
 				cursor.close()
 				return redirect(url_for('errorDeleteCarnet'))
@@ -323,15 +319,15 @@ def suppressionListe():
 					englishId=cursor.fetchall()
 				resultAvoir=cursor.execute("SELECT * from Avoir where Avoir.numListe = %s", (numListe))
 				if resultAvoir>0:
-					cursor.execute("DELETE from Avoir where Carnet.numCarnet = %s", (numListe))
+					cursor.execute("DELETE from Avoir where Avoir.numListe = %s", (numListe))
 					connection.commit()
 				if resultFr>0:
 					for rowF in frenchId:
-						cursor.execute("DELETE from VocaFrancais where numMF=",(rowF[0]))
+						cursor.execute("DELETE from VocaFrancais where numMF=%s",(rowF[0]))
 						connection.commit()
 				if resultAn>0:
 					for rowA in englishId:
-						cursor.execute("DELETE from VocaAnglais where numMA=",(rowA[0]))
+						cursor.execute("DELETE from VocaAnglais where numMA=%s",(rowA[0]))
 						connection.commit()
 				cursor.execute("DELETE from Liste where numListe=%s", (numListe))
 				connection.commit()
@@ -388,6 +384,70 @@ def ajouterMotAF():#il faut ajouter le lien Avoir après les mots Anglais et Fra
 		except: return '<h1> Erreur de connexion à la base de donnée <a href="/addMotAF">addMotAF</a></h1>'
 #FinAjout
 
+#delete mot-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@app.route('/deleteMotAF')
+def deleteMotAF():
+	cur=mysql.connect().cursor()
+	resultValue=cur.execute("SELECT VocaFrancais.numMF, VocaFrancais.libelle, VocaAnglais.libelle, Liste.nom FROM VocaFrancais inner join Avoir on VocaFrancais.numMF=Avoir.numMF inner join Liste on Avoir.numListe=Liste.numListe inner join Carnet on Liste.numCarnet=Carnet.numCarnet inner join Posseder on Carnet.numCarnet=Posseder.numCarnet inner join VocaAnglais on Avoir.numMA=VocaAnglais.numMA WHERE Posseder.pseudo=%s Order by Liste.nom", (user.get_username()))
+	if resultValue>0:
+		motDetails=cur.fetchall()
+		return render_template('deleteMotAF.html',motDetails=motDetails)
+	else: return '<h1>Vous n\'avez pas de Mot, lien vers la création de mots <a href="/addMotAF">addMotAF</a></h1>'
+
+
+@app.route('/deleteMotAF',methods=['GET','POST'])
+def suppressionMotAF():
+	if request.method=='POST':
+		numAF=request.form['numMotAF']
+		try:
+			connection=mysql.connect()#important de garder la connexion sinon il ne commit pas la requete du cursor
+			cursor = connection.cursor()
+			try:
+				cursor.execute("DELETE from Avoir where Avoir.numMF = %s", (numAF))
+				connection.commit()
+				cursor.execute("DELETE from VocaFrancais where numMF=%s",(numAF))
+				connection.commit()
+				cursor.execute("DELETE from VocaAnglais where numMA=%s",(numAF))
+				connection.commit()
+				cursor.close()
+				return redirect(url_for('successDeleteMots'))
+			except:
+				cursor.close()
+				return redirect(url_for('errorDeleteMots'))
+		except:
+			return'<h1> Erreur lors de l\'accés à la base de donnée <a href="/deleteMotAF">deleteMotAF</a></h1>'
+
+@app.route('/errorDeleteMots')
+def errorDeleteMots():
+	return '<h1>Erreur lors de la suppression d\'un mot <a href="/deleteMotAF">deleteMotAF</a></h1>'
+
+@app.route('/successDeleteMots')
+def successDeleteMots():
+	return '<h1>Suppression éffectué ! <a href="/deleteMotAF">deleteMotAF</a></h1>'
+#delete mot
+
+#Reviser mot liste---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@app.route('/reviserMotAF')
+def reviserMotAF():
+	cur=mysql.connect().cursor()
+	resultValue=cur.execute("SELECT * FROM Liste inner join Carnet on Liste.numCarnet=Carnet.numCarnet inner join Posseder on Carnet.numCarnet=Posseder.numCarnet WHERE Posseder.pseudo=%s", (user.get_username()))
+	if resultValue>0:
+		listeDetails=cur.fetchall()
+		return render_template('reviserMotAF.html',listeDetails=listeDetails)
+	else: return '<h1>Vous n\'avez pas de Mot, lien vers la création de mots <a href="/addMotAF">addMotAF</a></h1>'
+
+
+@app.route('/reviserMotAF',methods=['GET','POST'])
+def revisionsMotAF():
+	if request.method=='POST':
+		numListe=request.form['numListe']
+		cur=mysql.connect().cursor()
+		resultValue=cur.execute("SELECT VocaAnglais.libelle, VocaFrancais.libelle FROM VocaAnglais inner join Avoir on VocaAnglais.numMA=Avoir.numMA inner join VocaFrancais on Avoir.numMF=VocaFrancais.numMF WHERE Avoir.numListe=%s", (numListe))
+		if resultValue>0:
+			affMot=cur.fetchall()
+			return render_template('afficherMotAF.html',affMot=affMot)
+		else: return '<h1>Vous n\'avez pas de Mot, lien vers la création de mots <a href="/addMotAF">addMotAF</a></h1>'
+#fin reviser mot liste
 
 if __name__=="__main__":
     app.run(debug=True)
