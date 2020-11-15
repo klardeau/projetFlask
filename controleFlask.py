@@ -4,6 +4,7 @@ from flaskext.mysql import MySQL##aucasou
 #import bcrypt
 import datetime
 import uuid
+from random import *
 
 
 app = Flask(__name__)
@@ -77,10 +78,6 @@ def nvUtil():
 @app.route('/Home')
 def HomeCo():
 	return render_template('Home.html', username=user.get_username())
-
-@app.route('/passerTest')
-def passerTest():
-	return render_template('passerTest.html')
 
 @app.route('/addCarnet')
 def addCarnet():
@@ -449,5 +446,64 @@ def revisionsMotAF():
 		else: return '<h1>Vous n\'avez pas de Mot, lien vers la création de mots <a href="/addMotAF">addMotAF</a></h1>'
 #fin reviser mot liste
 
+
+#passer test random
+
+class test:
+	def __init__(self, numFRAN, libFr, libAn):
+		self.numFRAN=numFRAN
+		self.libFr=libFr
+		self.libAn=libAn
+
+	def get_numFRAN(self):
+		return self.numFRAN
+
+	def get_libFr(self):
+		return self.libFr
+
+	def get_libAn(self):
+		return self.libAn
+
+	def set_numFRAN(self,numFRAN):
+		self.numFRAN=numFRAN
+
+	def set_libFr(self,libFr):
+		self.libFr=libFr
+
+	def set_libAn(self,libAn):
+		self.libAn=libAn
+
+test=test('num','fr','an')
+@app.route('/passerTest')
+def passerTest():
+	cur=mysql.connect().cursor()
+	resultValue=cur.execute("SELECT VocaFrancais.numMF, VocaFrancais.libelle, VocaAnglais.libelle FROM VocaFrancais inner join Avoir on VocaFrancais.numMF=Avoir.numMF inner join Liste on Avoir.numListe=Liste.numListe inner join Carnet on Liste.numCarnet=Carnet.numCarnet inner join Posseder on Carnet.numCarnet=Posseder.numCarnet inner join VocaAnglais on Avoir.numMA=VocaAnglais.numMA WHERE Posseder.pseudo=%s", (user.get_username()))
+	if resultValue>0:
+		i=0
+		listeDetails=cur.fetchall()
+		for result in listeDetails:
+			i+=1
+		n=randint(1,i)#je mets un voca aux hasards
+		j=0
+		for result in listeDetails:
+			j+=1
+			if n==j:
+				test.set_numFRAN(result[0])
+				test.set_libFr(result[1])
+				test.set_libAn(result[2])
+		return render_template('passerTest.html',test=test)
+	else: return '<h1>Vous n\'avez pas de Mot, lien vers la création de mots <a href="/addMotAF">addMotAF</a></h1>'
+
+
+
+
+@app.route('/passerTest',methods=['GET','POST'])
+def passationDeTest():#il faut ajouter le lien Avoir après les mots Anglais et Français
+	if request.method=='POST':
+		lblAn=request.form['lblAn']
+		if lblAn==test.get_libAn():
+			return '<h1> Bien joué ! vous avez la bonne réponse. <a href="/passerTest">passerTest</a></h1>'
+		return '<h1> FAUX la bonne réponse est {{'+test.get_libAn()+'}} <a href="/passerTest">passerTest</a></h1>'
+#fin passer test
 if __name__=="__main__":
     app.run(debug=True)

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Passer Test</title>
+	<link href="../static/style.css" rel="stylesheet" type="text/css"/>
+</head>
+{% include 'header.html' %}
+
+<body>
+<div id="frm">
+		<form method="POST">
+			<p>
+				<br>
+				<label>Mot en Français:</label>
+				<br>
+				<p>{{test.get_libFr()}}</p>
+				<br>
+				<label>Mot en Anglais:</label>
+				<br>
+				<input type="text" id="lblAn" name="lblAn"/>
+			</p>
+			<p>
+				<input type="submit" value="Verifier"/>
+			</p>
+			<br>
+		</form>
+	</div>	
+</body>
+{% include 'footer.html' %}
+</html>
