@@ -18,7 +18,7 @@ def hello_world():
 #CTRL F5 reinitialise page css web.. parfait
 
 app.secret_key="hello"
-
+#connect to database
 app.config['MYSQL_DATABASE_HOST']='127.0.0.1'
 app.config['MYSQL_DATABASE_USER']='root'
 app.config['MYSQL_DATABASE_PASSWORD']='root'
@@ -305,7 +305,7 @@ def suppressionListe():
 	if request.method=='POST':
 		numListe=request.form['numListe']
 		try:
-			connection=mysql.connect()#important de garder la connexion sinon il ne commit pas la requete du cursor
+			connection=mysql.connect()#important de garder la connexion sinon il ne commit pas la requete du cursor, il y'a un ordre avant de delete une liste
 			cursor = connection.cursor()
 			try:
 				resultFr=cursor.execute("SELECT * from VocaFrancais inner join Avoir on VocaFrancais.numMF=Avoir.numMF where Avoir.numListe = %s", (numListe))
@@ -364,7 +364,7 @@ def ajouterMotAF():#il faut ajouter le lien Avoir après les mots Anglais et Fra
 		lblFr=request.form['lblFr']
 		lblAn=request.form['lblAn']
 		
-		numFrAn=uuid.uuid4()#l'un n'est rien sans l'autre donc autant mettre le meme id
+		numFrAn=uuid.uuid4()#l'un n'est rien sans l'autre donc autant mettre le meme id cela servira plus tard pour retrouver les deux avec 1 seul des deux id
 		try:
 			connection=mysql.connect()#important de garder la connexion sinon il ne commit pas la requete du cursor
 			cursor = connection.cursor()
@@ -400,7 +400,7 @@ def suppressionMotAF():
 			connection=mysql.connect()#important de garder la connexion sinon il ne commit pas la requete du cursor
 			cursor = connection.cursor()
 			try:
-				cursor.execute("DELETE from Avoir where Avoir.numMF = %s", (numAF))
+				cursor.execute("DELETE from Avoir where Avoir.numMF = %s", (numAF))#on delete Avoir le lien avant les voca Fr et An
 				connection.commit()
 				cursor.execute("DELETE from VocaFrancais where numMF=%s",(numAF))
 				connection.commit()
@@ -449,7 +449,7 @@ def revisionsMotAF():
 
 #passer test random
 
-class test:
+class test:#permet de créer un objet test qui sera innitialisé à chaque fois qu'on entre dans passer test
 	def __init__(self, numFRAN, libFr, libAn):
 		self.numFRAN=numFRAN
 		self.libFr=libFr
@@ -498,10 +498,10 @@ def passerTest():
 
 
 @app.route('/passerTest',methods=['GET','POST'])
-def passationDeTest():#il faut ajouter le lien Avoir après les mots Anglais et Français
+def passationDeTest():
 	if request.method=='POST':
 		lblAn=request.form['lblAn']
-		if lblAn==test.get_libAn():
+		if lblAn==test.get_libAn():#vérifie le resultat inscris et la bonne réponse
 			return '<h1> Bien joué ! vous avez la bonne réponse. <a href="/passerTest">passerTest</a></h1>'
 		return '<h1> FAUX la bonne réponse est {{'+test.get_libAn()+'}} <a href="/passerTest">passerTest</a></h1>'
 #fin passer test
