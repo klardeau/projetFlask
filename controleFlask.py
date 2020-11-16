@@ -16,7 +16,7 @@ def hello_world():
     #http://127.0.0.1:5000/
 """
 #CTRL F5 reinitialise page css web.. parfait
-
+#s
 app.secret_key="hello"
 #connect to database
 app.config['MYSQL_DATABASE_HOST']='127.0.0.1'
